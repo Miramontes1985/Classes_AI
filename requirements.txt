@@ -1,0 +1,12 @@
+streamlit
+transformers
+torch
+datasets
+pandas
+numpy
+Pillow
+sentencepiece
+accelerate
+scikit-learn
+requests
+sentence-transformers
