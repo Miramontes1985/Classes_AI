@@ -7,7 +7,7 @@ import torch
 # --------------------------
 # Page configuration
 # --------------------------
-st.set_page_config(page_title="AI Identity Profiling Demo", page_icon="🧠", layout="wide")
+st.set_page_config(page_title="AI Identity Profiling Demo", page_icon="🧠", layout="centered")
 st.title("🧠 AI Identity Profiling — Bias in Visual Classification")
 st.markdown("By Fernando Miramontes Forattini — Dublin City University")
 
@@ -55,7 +55,7 @@ if uploaded_file is not None:
             probs = torch.nn.functional.softmax(logits, dim=1).squeeze().tolist()
 
         prediction = {id2label[str(i)]: round(probs[i], 3) for i in range(len(probs))}
-        top_label = max(prediction, key=prediction.get)
+        top_label = max(prediction.items(), key=lambda item: item[1])[0]
 
     # Display results
     st.subheader("📊 Model Output")

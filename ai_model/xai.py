@@ -49,6 +49,60 @@ def last_reasoning(conversation) -> Optional[Dict[str, Any]]:
 def _format_actions(actions: List[str]) -> str:
     return ", ".join(actions) if actions else "none"
 
+# -----------------------------
+# Reflection helper
+# -----------------------------
+
+_PRE_ACTION_MESSAGES: Dict[str, str] = {
+    "redact_number": "redacted numbers for privacy",
+    "redact_email": "removed email metadata",
+    "possible_personal_reference": "flagged a possible personal reference",
+    "self_incrimination_flag": "flagged possible self-incrimination",
+}
+
+_POST_ACTION_MESSAGES: Dict[str, str] = {
+    "removed_personal_request": "removed a personal detail request",
+    "added_scope_disclaimer": "added a scope disclaimer",
+    "softened_tone": "softened tone for emotional content",
+    "post_filter_error": "post-filter fallback engaged",
+}
+
+
+def _friendly_list(actions: List[str], mapping: Dict[str, str]) -> str:
+    friendly: List[str] = []
+    for action in actions:
+        friendly.append(mapping.get(action, action.replace("_", " ")))
+    return ", ".join(friendly)
+
+
+def generate_reflection_text(
+    *,
+    mode: str,
+    intent: str,
+    pre_actions: List[str],
+    post_actions: List[str],
+    ethical_label: str,
+    confidence: str,
+) -> str:
+    """
+    Produce the short reflection summary shown inline in the chat UI.
+    """
+    intent_pretty = intent.replace("_", " ").title()
+    label_pretty = ethical_label.replace("_", " ").title()
+
+    segments: List[str] = [f"🎛️ Mode: {mode.capitalize()} ({intent_pretty})"]
+
+    if pre_actions:
+        segments.append(f"🧩 Pre-checks: {_friendly_list(pre_actions, _PRE_ACTION_MESSAGES)}")
+
+    if post_actions:
+        segments.append(f"🌿 Post-checks: {_friendly_list(post_actions, _POST_ACTION_MESSAGES)}")
+
+    segments.append(f"💠 Ethics: {label_pretty}")
+    segments.append(f"📊 Confidence: {confidence.title()}")
+
+    return " · ".join(segments)
+
 
 # def render_reasoning_panel(reasoning: Optional[Dict[str, Any]]):
 #     """
@@ -94,58 +148,3 @@ def _format_actions(actions: List[str]) -> str:
 #         "Clara adapts her tone, safeguards, and ethical stance in real time. "
 #         "This trace keeps that process transparent."
 #     )
-
-
-# -----------------------------
-# Reflection helper
-# -----------------------------
-
-_PRE_ACTION_MESSAGES: Dict[str, str] = {
-    "redact_number": "redacted numbers for privacy",
-    "redact_email": "removed email metadata",
-    "possible_personal_reference": "flagged a possible personal reference",
-    "self_incrimination_flag": "flagged possible self-incrimination",
-}
-
-_POST_ACTION_MESSAGES: Dict[str, str] = {
-    "removed_personal_request": "removed a personal detail request",
-    "added_scope_disclaimer": "added a scope disclaimer",
-    "softened_tone": "softened tone for emotional content",
-    "post_filter_error": "post-filter fallback engaged",
-}
-
-
-def _friendly_list(actions: List[str], mapping: Dict[str, str]) -> str:
-    friendly: List[str] = []
-    for action in actions:
-        friendly.append(mapping.get(action, action.replace("_", " ")))
-    return ", ".join(friendly)
-
-
-def generate_reflection_text(
-    *,
-    mode: str,
-    intent: str,
-    pre_actions: List[str],
-    post_actions: List[str],
-    ethical_label: str,
-    confidence: str,
-) -> str:
-    """
-    Produce the short reflection summary shown inline in the chat UI.
-    """
-    intent_pretty = intent.replace("_", " ").title()
-    label_pretty = ethical_label.replace("_", " ").title()
-
-    segments: List[str] = [f"Mode ready: {mode.capitalize()} ({intent_pretty})"]
-
-    if pre_actions:
-        segments.append(f"Pre-checks: {_friendly_list(pre_actions, _PRE_ACTION_MESSAGES)}")
-
-    if post_actions:
-        segments.append(f"Post-checks: {_friendly_list(post_actions, _POST_ACTION_MESSAGES)}")
-
-    segments.append(f"Ethics tag: {label_pretty}")
-    segments.append(f"Confidence: {confidence.title()}")
-
-    return " · ".join(segments)

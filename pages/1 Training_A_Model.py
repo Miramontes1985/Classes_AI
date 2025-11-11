@@ -15,7 +15,7 @@ import time, torch, os, json, datetime, numpy as np
 # ---------------------------
 # Page config
 # ---------------------------
-st.set_page_config(page_title="Business AI Training Demo", page_icon="💼", layout="wide")
+st.set_page_config(page_title="Business AI Training Demo", page_icon="💼", layout="centered")
 st.title("💼 Business AI Training Demo")
 st.markdown("By Fernando Miramontes Forattini — Dublin City University")
 
@@ -148,7 +148,7 @@ with tab2:
 
         trainer = Trainer(model=model, args=args, train_dataset=tokenized)
 
-        st.subheader("🚀 Training progress (simulated visible steps + real train)")
+        st.subheader("🚀 Training progress (simulated visible steps + real training)")
         progress = st.progress(0)
         loss_chart = st.empty()
 
@@ -165,6 +165,11 @@ with tab2:
         tokenizer.save_pretrained("./trained_model")
 
         progress.progress(1.0, text="Finalizing and saving model...")
+
+        # Clear cached resources so new artifacts load immediately
+        load_trained_model.clear()
+        get_tokenizer_and_model.clear()
+
         st.success("✅ Fine-tuning complete. Saved to ./trained_model")
         st.balloons()
 

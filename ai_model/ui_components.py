@@ -97,12 +97,13 @@ USER_AVATAR_B64 = load_avatar("reply.png")
 # ------------------------------
 def render_clara(text: str):
     avatar = f'<img src="data:image/png;base64,{CLARA_AVATAR_B64}" alt="Clara">'
+    safe_text = text.replace("\n", "<br>")
     st.markdown(f"""
     <div class="clara-container">
         {avatar}
         <div class="clara-text">
             <div class="clara-name">Clara</div>
-            {text}
+            {safe_text}
         </div>
     </div>
     """, unsafe_allow_html=True)
@@ -154,8 +155,9 @@ def render_reflection(text: str, container=None):
         <div class="clara-text" style="
             background-color: #fffbe6;
             border-left: 4px solid #bfa15a;
-            font-style: italic;
-            color: #444;
+            font-style: normal;
+            color: #222;
+            white-space: normal;
         ">
             🪞 <b>Clara’s Reflection:</b> {text}
         </div>

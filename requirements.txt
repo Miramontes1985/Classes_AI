@@ -10,3 +10,4 @@ accelerate
 scikit-learn
 requests
 sentence-transformers
+langdetect

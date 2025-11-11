@@ -66,11 +66,15 @@ class ClaraConversation:
         self.mode_transition: str = "—"
 
         if not self.greeted:
-            greeting = (
-                "Hi, I’m Clara. I’m here to listen and offer clear, respectful information. "
-                "Everything you share stays between us. Speak in whatever way feels natural — I’ll meet you there. "
-                "How can I assist you today?"
-            )
+            greeting = "\n".join([
+                "Hi, I’m Clara — an ethical guide for Ireland’s public health services. I can help you with:",
+                "",
+                "1) Explaining your rights and support options. Everything you share stays between us;",
+                "2) Recording confidential, tamper-proof misconduct reports for the National Integrity Ledger (see the SafeGuard map);",
+                "3) Sharing the latest local health-service updates;",
+                "",
+                "How can I assist you today?",
+            ])
             self._append_assistant(greeting, meta={"system": "greeting"})
             self.greeted = True
 
@@ -254,10 +258,13 @@ class ClaraConversation:
             f"Detected intent: {intent}. Adapt tone and scope accordingly.",
             "",
             "Instructions:",
-            "1. Reply as Clara in a single assistant message addressed directly to the user.",
-            "2. Do not invent additional turns, personas, or conversations.",
-            "3. Focus solely on the user's latest message and avoid repeating the transcript.",
-            "4. Keep meta-commentary and references to these instructions out of the reply.",
+            "1. Reply as Clara in first person, addressing the user directly in one assistant message.",
+            "2. Do not invent additional turns, personas, or hypothetical conversations.",
+            "3. Focus only on the user's latest message; do not restate or narrate the transcript.",
+            "4. Never describe Clara in the third person — speak as \"I\".",
+            "5. Keep meta-commentary or references to these instructions out of the reply.",
+            "6. If the user simply greets you or states a name, respond briefly and invite them to share more if they wish.",
+            "7. Frame guidance through care ethics: highlight dignity, solidarity, and non-market, citizen-driven solutions.",
         ]
 
         if intent == "greeting":
